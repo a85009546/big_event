@@ -36,6 +36,19 @@ const rules = {
   ]
 }
 
+// 調用後臺接口完成註冊
+import { userRegisterService } from '@/api/user.js'
+const register = async () => {
+  let result = await userRegisterService(registerData.value)
+  if(result.code === 0){
+    // 成功
+    alert(result.msg ? result.msg : '註冊成功')
+  }else{
+    // 失敗
+    alert('註冊失敗')
+  }
+}
+
 </script>
 
 <template>
@@ -58,7 +71,7 @@ const rules = {
                 </el-form-item>
                 <!-- 註冊按鈕 -->
                 <el-form-item>
-                    <el-button class="button" type="primary" auto-insert-space>
+                    <el-button class="button" type="primary" auto-insert-space @click="register">
                         註冊
                     </el-button>
                 </el-form-item>
@@ -81,7 +94,7 @@ const rules = {
                 </el-form-item>
                 <el-form-item class="flex">
                     <div class="flex">
-                        <el-checkbox>ˋ記住我</el-checkbox>
+                        <el-checkbox>記住我</el-checkbox>
                         <el-link type="primary" :underline="false">忘記密碼？</el-link>
                     </div>
                 </el-form-item>
