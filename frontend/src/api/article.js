@@ -1,6 +1,9 @@
 import request from '@/utils/request.js'
+import { useTokenStore } from '@/stores/token.js'
 
 // 文章分類列表查詢
 export const articleCategoryListService = () => {
-  return request.get('/category')
+  const tokenStore = useTokenStore();
+  // 在pinia中定義的響應式數據，都不需要 .value
+  return request.get('/category', {headers: {'Authorization':tokenStore.token}})
 }

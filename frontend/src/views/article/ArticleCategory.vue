@@ -28,7 +28,7 @@ const categorys = ref([
     }
 ])
 
-// 聲明一個異步驟的函數
+// 聲明一個異步的函數
 import {articleCategoryListService} from '@/api/article.js'
 const articleCategoryList = async () => {
     let result = await articleCategoryListService();

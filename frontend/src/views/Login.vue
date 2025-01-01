@@ -47,11 +47,16 @@ const register = async () => {
 // 登入綁定數據，複用註冊表單的數據模型
 // 登入表單數據校驗，複用註冊表單的校驗規則
 // 登入函數
+import {useTokenStore} from '@/stores/token.js'
 import {useRouter} from 'vue-router'
 const router = useRouter()
+const tokenStore = useTokenStore()
 const login = async () => {
   let result = await userLoginService(registerData.value)
   ElMessage.success(result.msg ? result.msg : '登入成功')
+  // 把得到的token存到pinia中
+  console.log(result.data)
+  tokenStore.setToken(result.data)
   // 跳轉到首頁，路由完成跳轉
   router.push('/')
 }
