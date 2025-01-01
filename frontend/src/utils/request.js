@@ -3,7 +3,8 @@
 // 導入axios  npm install axios
 import axios from 'axios';
 // 定義一個變量，紀錄公共的前綴 ,  baseURL
-const baseURL = 'http://localhost:8080';
+// const baseURL = 'http://localhost:8080';
+const baseURL = '/api';
 const instance = axios.create({baseURL})
 
 
