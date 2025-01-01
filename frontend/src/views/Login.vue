@@ -41,17 +41,19 @@ const rules = {
 import { userRegisterService, userLoginService } from '@/api/user.js'
 const register = async () => {
   let result = await userRegisterService(registerData.value)
-//   alert(result.msg ? result.msg : '註冊成功')
   ElMessage.success(result.msg ? result.msg : '註冊成功')
 }
 
 // 登入綁定數據，複用註冊表單的數據模型
 // 登入表單數據校驗，複用註冊表單的校驗規則
 // 登入函數
+import {useRouter} from 'vue-router'
+const router = useRouter()
 const login = async () => {
   let result = await userLoginService(registerData.value)
-//   alert(result.msg ? result.msg : '登入成功')
   ElMessage.success(result.msg ? result.msg : '登入成功')
+  // 跳轉到首頁，路由完成跳轉
+  router.push('/')
 }
 
 // 定義清空數據模型的函數
