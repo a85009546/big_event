@@ -26,7 +26,8 @@ const categorys = ref([
 ]);
 
 // 聲明一個異步的函數
-import { articleCategoryListService, articleCategoryAddService, articleCategoryUpdateService } from "@/api/article.js";
+import { articleCategoryListService, articleCategoryAddService,
+        articleCategoryUpdateService, articleCategoryDeleteService } from "@/api/article.js";
 const articleCategoryList = async () => {
   let result = await articleCategoryListService();
   categorys.value = result.data;
@@ -92,6 +93,37 @@ const clearData = () => {
     categoryModel.value.categoryName = '';
     categoryModel.value.categoryAlias = '';
 }
+
+// 刪除分類
+import { ElMessageBox } from "element-plus";
+const deleteCategory = (row) => {
+    // 提示用戶 確認框
+    ElMessageBox.confirm(
+    '確定要刪除該分類嗎?',
+    '溫馨提示',
+    {
+      confirmButtonText: '確定',
+      cancelButtonText: '取消',
+      type: 'warning',
+    }
+  )
+    .then(async () => {
+      // 調用接口，刪除文章分類
+      let result = await articleCategoryDeleteService(row.id);
+      ElMessage({
+        type: 'success',
+        message: '刪除成功',
+      })
+      // 刷新列表
+      articleCategoryList();
+    })
+    .catch(() => {
+      ElMessage({
+        type: 'info',
+        message: '用戶取消了刪除',
+      })
+    })
+}
 </script>
 
 <template>
@@ -111,7 +143,7 @@ const clearData = () => {
       <el-table-column label="操作" width="100">
         <template #default="{ row }">
           <el-button :icon="Edit" circle plain type="primary" @click="showDialog(row)"></el-button>
-          <el-button :icon="Delete" circle plain type="danger"></el-button>
+          <el-button :icon="Delete" circle plain type="danger" @click="deleteCategory(row)"></el-button>
         </template>
       </el-table-column>
       <template #empty>
