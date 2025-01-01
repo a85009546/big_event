@@ -1,6 +1,7 @@
 <script setup>
 import { User, Lock } from '@element-plus/icons-vue'
 import { ref } from 'vue'
+import { ElMessage } from 'element-plus'
 // 控制註冊與登入表單的顯示，默認顯示註冊
 const isRegister = ref(false)
 // 定義數據模型
@@ -40,13 +41,8 @@ const rules = {
 import { userRegisterService, userLoginService } from '@/api/user.js'
 const register = async () => {
   let result = await userRegisterService(registerData.value)
-  if(result.code === 0){
-    // 成功
-    alert(result.msg ? result.msg : '註冊成功')
-  }else{
-    // 失敗
-    alert('註冊失敗')
-  }
+//   alert(result.msg ? result.msg : '註冊成功')
+  ElMessage.success(result.msg ? result.msg : '註冊成功')
 }
 
 // 登入綁定數據，複用註冊表單的數據模型
@@ -54,13 +50,8 @@ const register = async () => {
 // 登入函數
 const login = async () => {
   let result = await userLoginService(registerData.value)
-  if(result.code === 0){
-    // 成功
-    alert(result.msg ? result.msg : '登入成功')
-  }else{
-    // 失敗
-    alert('登入失敗')
-  }
+//   alert(result.msg ? result.msg : '登入成功')
+  ElMessage.success(result.msg ? result.msg : '登入成功')
 }
 
 // 定義清空數據模型的函數
