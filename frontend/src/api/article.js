@@ -9,3 +9,8 @@ export const articleCategoryListService = () => {
 export const articleCategoryAddService = (categoryData) => {
   return request.post('/category', categoryData)
 }
+
+// 編輯文章分類
+export const articleCategoryUpdateService = (categoryData) => {
+  return request.put('/category', categoryData)
+}

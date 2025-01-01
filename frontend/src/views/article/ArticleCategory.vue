@@ -26,7 +26,7 @@ const categorys = ref([
 ]);
 
 // 聲明一個異步的函數
-import { articleCategoryListService, articleCategoryAddService } from "@/api/article.js";
+import { articleCategoryListService, articleCategoryAddService, articleCategoryUpdateService } from "@/api/article.js";
 const articleCategoryList = async () => {
   let result = await articleCategoryListService();
   categorys.value = result.data;
@@ -73,6 +73,18 @@ const showDialog = (row) => {
     categoryModel.value.categoryAlias = row.categoryAlias;
     // 擴展id屬性，將來需要傳遞給後台，完成分類的修改
     categoryModel.value.id = row.id;
+}
+
+// 編輯分類
+const updateCategory = async () => {
+    // 調用接口
+    let result = await articleCategoryUpdateService(categoryModel.value);
+    ElMessage.success(result.msg ? result.msg : "修改成功");
+
+    // 調用獲取所有文章分類的函數，刷新頁面的概念
+    articleCategoryList();
+    // 關掉當前彈窗
+    dialogVisible.value = false;
 }
 </script>
 
@@ -126,7 +138,7 @@ const showDialog = (row) => {
       <template #footer>
         <span class="dialog-footer">
           <el-button @click="dialogVisible = false">取消</el-button>
-          <el-button type="primary" @click="addCategory"> 確認 </el-button>
+          <el-button type="primary" @click="title == '添加分類' ? addCategory() : updateCategory()"> 確認 </el-button>
         </span>
       </template>
     </el-dialog>
