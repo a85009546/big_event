@@ -86,6 +86,12 @@ const updateCategory = async () => {
     // 關掉當前彈窗
     dialogVisible.value = false;
 }
+
+// 清空模型的數據
+const clearData = () => {
+    categoryModel.value.categoryName = '';
+    categoryModel.value.categoryAlias = '';
+}
 </script>
 
 <template>
@@ -94,7 +100,7 @@ const updateCategory = async () => {
       <div class="header">
         <span>文章分類</span>
         <div class="extra">
-          <el-button type="primary" @click="dialogVisible = true ; title = '添加分類'">添加分類</el-button>
+          <el-button type="primary" @click="dialogVisible = true ; title = '添加分類' ; clearData()">添加分類</el-button>
         </div>
       </div>
     </template>
