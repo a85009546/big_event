@@ -50,7 +50,7 @@ const rules = {
   ],
 };
 // 調用接口，添加表單
-import { ElMessage } from "element-plus";
+import { ElMessage, rowContextKey } from "element-plus";
 const addCategory = async () => {
     // 調用接口
     let result = await articleCategoryAddService(categoryModel.value);
@@ -61,6 +61,19 @@ const addCategory = async () => {
     // 關掉當前彈窗
     dialogVisible.value = false;
 }
+
+// 定義變量，控制標題的展示
+const title = ref('');
+
+// 展示編輯彈窗，這裡的 dialogVisible與title 要記得 .value
+const showDialog = (row) => {
+    dialogVisible.value = true ; title.value = '編輯分類'
+    // 數據拷貝
+    categoryModel.value.categoryName = row.categoryName;
+    categoryModel.value.categoryAlias = row.categoryAlias;
+    // 擴展id屬性，將來需要傳遞給後台，完成分類的修改
+    categoryModel.value.id = row.id;
+}
 </script>
 
 <template>
@@ -69,9 +82,7 @@ const addCategory = async () => {
       <div class="header">
         <span>文章分類</span>
         <div class="extra">
-          <el-button type="primary" @click="dialogVisible = true"
-            >添加分類</el-button
-          >
+          <el-button type="primary" @click="dialogVisible = true ; title = '添加分類'">添加分類</el-button>
         </div>
       </div>
     </template>
@@ -81,7 +92,7 @@ const addCategory = async () => {
       <el-table-column label="分類別名" prop="categoryAlias"></el-table-column>
       <el-table-column label="操作" width="100">
         <template #default="{ row }">
-          <el-button :icon="Edit" circle plain type="primary"></el-button>
+          <el-button :icon="Edit" circle plain type="primary" @click="showDialog(row)"></el-button>
           <el-button :icon="Delete" circle plain type="danger"></el-button>
         </template>
       </el-table-column>
@@ -90,7 +101,7 @@ const addCategory = async () => {
       </template>
     </el-table>
     <!-- 添加分類彈窗 -->
-    <el-dialog v-model="dialogVisible" title="添加彈層" width="30%">
+    <el-dialog v-model="dialogVisible" :title="title" width="30%">
       <el-form
         :model="categoryModel"
         :rules="rules"
