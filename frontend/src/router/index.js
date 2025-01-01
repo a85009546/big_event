@@ -30,4 +30,5 @@ const router = createRouter({
 
 // 導出路由器
 // 正確導出 router
-export { router };
+export default router
+// export { router };
