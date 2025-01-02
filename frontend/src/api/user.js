@@ -38,3 +38,8 @@ export const userAvatarUpdateService = (avatarUrl) => {
   // 注意，這裡是 patch 請求，不是 put
   return request.patch('/user/updateAvatar', params)
 }
+
+// 修改密碼
+export const userPasswordUpdateService = (passwordData) => {
+  return request.patch('/user/updatePwd', passwordData)
+}
