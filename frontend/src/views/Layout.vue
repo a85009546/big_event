@@ -13,6 +13,8 @@ import avatar from '@/assets/default.png'
 
 import { userInfoService } from '@/api/user.js';
 import useUserInfoStore from '@/stores/userInfo.js';
+import { useTokenStore } from '@/stores/token.js';
+const tokenStore = useTokenStore();
 const userInfoStore = useUserInfoStore();
 // 調用函數，獲取用戶詳細信息
 const getUserInfo = async () => {
@@ -22,6 +24,47 @@ const getUserInfo = async () => {
     userInfoStore.setInfo(result.data);
 }
 getUserInfo();
+// 條目被點擊後，調用的函數
+import { useRouter } from 'vue-router';
+const routet = useRouter();
+import { ElMessage, ElMessageBox } from "element-plus";
+
+const handleCommand = (command) => {
+    // 判斷指令
+    if(command === 'logout'){
+        // 退出登入
+        ElMessageBox.confirm(
+            '您確定要退出嗎?',
+            '溫馨提示',
+            {
+            confirmButtonText: '確定',
+            cancelButtonText: '取消',
+            type: 'warning',
+            }
+        )
+            .then(async () => {
+            // 退出登入
+            // 1. 清空 pinia 中存儲的 token 以及個人資料
+            tokenStore.removeToken();
+            userInfoStore.removeInfo();
+            // 2. 跳轉到登入頁面
+            routet.push('/login');
+            ElMessage({
+                type: 'success',
+                message: '退出登入成功',
+            })}
+        )
+            .catch(() => {
+            ElMessage({
+                type: 'info',
+                message: '用戶取消了退出登入',
+            })}
+        )
+    }else{
+        // 路由
+        routet.push('/user/' + command);
+    }
+}
 </script>
 
 <template>
@@ -79,7 +122,8 @@ getUserInfo();
             <el-header>
                 <div>黑馬程序員：<strong>{{userInfoStore.info.nickname}}</strong></div>
                 <!-- 下拉菜單 -->
-                <el-dropdown placement="bottom-end">
+                <!-- command: 條目被點擊後會觸發，在事件函數上可以聲明一個參數，接收條目對應的指令 -->
+                <el-dropdown placement="bottom-end" @command="handleCommand">
                     <span class="el-dropdown__box">
                         <el-avatar :src="userInfoStore.info.userPic || avatar" />
                         <el-icon>
@@ -88,9 +132,9 @@ getUserInfo();
                     </span>
                     <template #dropdown>
                         <el-dropdown-menu>
-                            <el-dropdown-item command="profile" :icon="User">基本資料</el-dropdown-item>
+                            <el-dropdown-item command="info" :icon="User">基本資料</el-dropdown-item>
                             <el-dropdown-item command="avatar" :icon="Crop">更換頭像</el-dropdown-item>
-                            <el-dropdown-item command="password" :icon="EditPen">重置密碼</el-dropdown-item>
+                            <el-dropdown-item command="resetPassword" :icon="EditPen">重置密碼</el-dropdown-item>
                             <el-dropdown-item command="logout" :icon="SwitchButton">退出登入</el-dropdown-item>
                         </el-dropdown-menu>
                     </template>
