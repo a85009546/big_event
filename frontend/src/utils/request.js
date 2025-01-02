@@ -1,4 +1,4 @@
-// 訂製請求的實力
+// 訂製請求的實例
 
 // 導入axios  npm install axios
 import axios from 'axios';

@@ -7,29 +7,7 @@ import {
 import { ref } from 'vue'
 
 //文章分類數據模型
-const categorys = ref([
-    {
-        "id": 3,
-        "categoryName": "美食",
-        "categoryAlias": "my",
-        "createTime": "2023-09-02 12:06:59",
-        "updateTime": "2023-09-02 12:06:59"
-    },
-    {
-        "id": 4,
-        "categoryName": "娱乐",
-        "categoryAlias": "yl",
-        "createTime": "2023-09-02 12:08:16",
-        "updateTime": "2023-09-02 12:08:16"
-    },
-    {
-        "id": 5,
-        "categoryName": "軍事",
-        "categoryAlias": "js",
-        "createTime": "2023-09-02 12:08:33",
-        "updateTime": "2023-09-02 12:08:33"
-    }
-])
+const categorys = ref('')
 
 //用戶搜索時選中的分類id
 const categoryId=ref('')
@@ -38,38 +16,7 @@ const categoryId=ref('')
 const state=ref('')
 
 //文章列表數據模型
-const articles = ref([
-    {
-        "id": 5,
-        "title": "陕西旅游攻略",
-        "content": "兵马俑,华清池,法门寺,华山...爱去哪去哪...",
-        "coverImg": "https://big-event-gwd.oss-cn-beijing.aliyuncs.com/9bf1cf5b-1420-4c1b-91ad-e0f4631cbed4.png",
-        "state": "草稿",
-        "categoryId": 2,
-        "createTime": "2023-09-03 11:55:30",
-        "updateTime": "2023-09-03 11:55:30"
-    },
-    {
-        "id": 5,
-        "title": "陕西旅游攻略",
-        "content": "兵马俑,华清池,法门寺,华山...爱去哪去哪...",
-        "coverImg": "https://big-event-gwd.oss-cn-beijing.aliyuncs.com/9bf1cf5b-1420-4c1b-91ad-e0f4631cbed4.png",
-        "state": "草稿",
-        "categoryId": 2,
-        "createTime": "2023-09-03 11:55:30",
-        "updateTime": "2023-09-03 11:55:30"
-    },
-    {
-        "id": 5,
-        "title": "陕西旅游攻略",
-        "content": "兵马俑,华清池,法门寺,华山...爱去哪去哪...",
-        "coverImg": "https://big-event-gwd.oss-cn-beijing.aliyuncs.com/9bf1cf5b-1420-4c1b-91ad-e0f4631cbed4.png",
-        "state": "草稿",
-        "categoryId": 2,
-        "createTime": "2023-09-03 11:55:30",
-        "updateTime": "2023-09-03 11:55:30"
-    },
-])
+const articles = ref('')
 
 //分頁條數據模型
 const pageNum = ref(1)//當前頁
@@ -86,12 +33,44 @@ const onCurrentChange = (num) => {
 }
 
 // 回顯文章分類
-import { articleCategoryListService } from '@/api/article.js'
+import { articleCategoryListService, articleListService } from '@/api/article.js'
 const articleCategoryList = async () => {
     let result = await articleCategoryListService();
     categorys.value = result.data;
 };
+
+// 獲取文章列表數據
+const articleList = async () => {
+    let params = {
+        pageNum: pageNum.value,
+        pageSize: pageSize.value,
+        categoryId: categoryId.value ? categoryId.value : null,
+        state: state.value ? state.value : null
+    }
+    let result = await articleListService(params);
+    console.log(result);
+
+    // 渲染視圖，記得這裡的 total、items變量名要與接口文檔一致
+    total.value = result.data.total;
+    articles.value = result.data.items;
+
+
+    // 處理數據，給數據模型擴展一個屬性 categoryName，分類名稱
+    // 正常應該不會這麼做，應該從後端查詢後一起傳回
+    for(let i = 0; i < articles.value.length; i++){
+        let article = articles.value[i];
+        for(let j = 0 ; j < categorys.value.length; j++){
+            if(article.categoryId == categorys.value[j].id){
+                article.categoryName = categorys.value[j].categoryName;
+            }
+        }
+    }
+}
+
 articleCategoryList();
+articleList();
+
+
 </script>
 <template>
     <el-card class="page-container">
@@ -130,7 +109,7 @@ articleCategoryList();
         <!-- 文章列表 -->
         <el-table :data="articles" style="width: 100%">
             <el-table-column label="文章標題" width="400" prop="title"></el-table-column>
-            <el-table-column label="分類" prop="categoryId"></el-table-column>
+            <el-table-column label="分類" prop="categoryName"></el-table-column>
             <el-table-column label="發表時間" prop="createTime"> </el-table-column>
             <el-table-column label="狀態" prop="state"></el-table-column>
             <el-table-column label="操作" width="100">
