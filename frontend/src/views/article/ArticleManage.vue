@@ -35,6 +35,7 @@ const onCurrentChange = (num) => {
 import {
   articleCategoryListService,
   articleListService,
+  articleAddService
 } from "@/api/article.js";
 const articleCategoryList = async () => {
   let result = await articleCategoryListService();
@@ -92,6 +93,21 @@ const tokenStore = useTokenStore();
 const uploadSuccess = (result) => {
     // result就是後台響應的數據，格式為:{code: 狀態碼, message: 提示訊息, data: 圖片的存儲地址}
   articleModel.value.coverImg = result.data;
+};
+
+// 添加文章
+import { ElMessage } from "element-plus";
+const addArticle = async (clickState) => {
+    // 把發布狀態賦值給數據模型
+    articleModel.value.state = clickState;
+    // 調用接口
+    let result = await articleAddService(articleModel.value);
+    ElMessage.success(result.msg ? result.msg : "添加成功");
+    // 關閉抽屜
+    visibleDrawer.value = false;
+
+    // 刷新當前列表
+    articleList();
 };
 </script>
 
@@ -236,8 +252,8 @@ const uploadSuccess = (result) => {
           </div>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary">发布</el-button>
-          <el-button type="info">草稿</el-button>
+          <el-button type="primary" @click="addArticle('已發布')">發布</el-button>
+          <el-button type="info" @click="addArticle('草稿')">草稿</el-button>
         </el-form-item>
       </el-form>
     </el-drawer>
