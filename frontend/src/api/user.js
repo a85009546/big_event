@@ -20,3 +20,8 @@ export const userLoginService = (loginData) => {
   }
   return request.post('/user/login', params)
 }
+
+// 獲取用戶詳細信息
+export const userInfoService = () => {
+  return request.get('/user/userInfo')
+}
