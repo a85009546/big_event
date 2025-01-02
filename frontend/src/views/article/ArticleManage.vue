@@ -21,15 +21,17 @@ const articles = ref('')
 //分頁條數據模型
 const pageNum = ref(1)//當前頁
 const total = ref(20)//總條數
-const pageSize = ref(3)//每頁條數
+const pageSize = ref(2)//每頁條數
 
 //當每頁條數發生了變化，調用此函数
 const onSizeChange = (size) => {
     pageSize.value = size
+    articleList();
 }
 //當前頁碼發生變化，調用此函数
 const onCurrentChange = (num) => {
     pageNum.value = num
+    articleList();
 }
 
 // 回顯文章分類
@@ -48,7 +50,6 @@ const articleList = async () => {
         state: state.value ? state.value : null
     }
     let result = await articleListService(params);
-    console.log(result);
 
     // 渲染視圖，記得這裡的 total、items變量名要與接口文檔一致
     total.value = result.data.total;
@@ -102,8 +103,8 @@ articleList();
                 </el-select>
             </el-form-item>
             <el-form-item>
-                <el-button type="primary">搜索</el-button>
-                <el-button>重置</el-button>
+                <el-button type="primary" @click="articleList">搜索</el-button>
+                <el-button @click="categoryId='' ; state=''">重置</el-button>
             </el-form-item>
         </el-form>
         <!-- 文章列表 -->
@@ -137,6 +138,9 @@ articleList();
         display: flex;
         align-items: center;
         justify-content: space-between;
+    }
+    .el-select {
+        width: 150px;
     }
 }
 </style>
